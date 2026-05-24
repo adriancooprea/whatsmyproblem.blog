@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
-/* ---------- Self-hosted fonts ---------- */
+/* ============================================================
+   Notes from the Subsurface — The Underground Dialectic
+   Existential Brutalism. Charcoal base, parchment ink,
+   oxidized crimson accent. Sharp corners, 1px cages, no shadow.
+   ============================================================ */
+
+/* ---------- Self-hosted fonts (no CDN) ---------- */
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("/fonts/SpaceGrotesk-Variable.woff2") format("woff2-variations");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: "EB Garamond";
   src: url("/fonts/EBGaramond-Variable.woff2") format("woff2-variations");
@@ -16,174 +29,227 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "Cormorant Garamond";
-  src: url("/fonts/CormorantGaramond-Regular.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "Material Symbols Outlined";
+  src: url("/fonts/MaterialSymbolsOutlined.woff2") format("woff2");
+  font-weight: 100 700;
   font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Cormorant Garamond";
-  src: url("/fonts/CormorantGaramond-Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
-/* ---------- Theme tokens ---------- */
+/* ---------- Theme tokens (dark = default) ---------- */
 @theme {
-  --font-serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
-  --font-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-headline-xl: "Space Grotesk", system-ui, sans-serif;
+  --font-headline-lg: "Space Grotesk", system-ui, sans-serif;
+  --font-headline-lg-mobile: "Space Grotesk", system-ui, sans-serif;
+  --font-label-md: "Space Grotesk", system-ui, sans-serif;
+  --font-body-lg: "EB Garamond", Georgia, serif;
+  --font-body-md: "EB Garamond", Georgia, serif;
+  --font-caption: "EB Garamond", Georgia, serif;
 
-  --color-bg: #F1ECE2;
-  --color-ink: #1A1613;
-  --color-rule: rgba(26, 22, 19, 0.2);
-  --color-muted: #6B645B;
-  --color-wound: #6B1A1A;
+  --text-headline-xl: 64px;
+  --text-headline-xl--line-height: 1.1;
+  --text-headline-xl--letter-spacing: -0.04em;
+  --text-headline-xl--font-weight: 700;
+  --text-headline-lg: 40px;
+  --text-headline-lg--line-height: 1.2;
+  --text-headline-lg--letter-spacing: -0.02em;
+  --text-headline-lg--font-weight: 600;
+  --text-headline-lg-mobile: 32px;
+  --text-headline-lg-mobile--line-height: 1.2;
+  --text-headline-lg-mobile--font-weight: 600;
+  --text-body-lg: 22px;
+  --text-body-lg--line-height: 1.6;
+  --text-body-md: 18px;
+  --text-body-md--line-height: 1.6;
+  --text-label-md: 14px;
+  --text-label-md--line-height: 1.4;
+  --text-label-md--letter-spacing: 0.1em;
+  --text-label-md--font-weight: 500;
+  --text-caption: 14px;
+  --text-caption--line-height: 1.4;
+
+  --spacing-unit: 4px;
+  --spacing-gutter: 24px;
+  --spacing-margin: 48px;
+
+  --color-background: #131313;
+  --color-surface: #131313;
+  --color-surface-dim: #131313;
+  --color-surface-bright: #393939;
+  --color-surface-container-lowest: #0e0e0e;
+  --color-surface-container-low: #1b1c1c;
+  --color-surface-container: #1f2020;
+  --color-surface-container-high: #2a2a2a;
+  --color-surface-container-highest: #353535;
+  --color-on-background: #e4e2e1;
+  --color-on-surface: #e4e2e1;
+  --color-on-surface-variant: #c4c7c7;
+  --color-outline: #8e9192;
+  --color-outline-variant: #444748;
+  --color-primary: #c8c6c5;
+  --color-on-primary: #313030;
+  --color-secondary: #c9c6c1;
+  --color-secondary-container: #474743;
+  --color-on-secondary-container: #b7b5af;
+  --color-tertiary: #cac6c3;
+  --color-on-tertiary-container: #807d7b;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+  --color-cage: #2a2a2a;
+  --color-parchment: #f2efe9;
 
   --measure: 62ch;
-  --cage-gutter: 1.25rem;
 }
 
-/* ---------- Mode ---------- */
-:root {
-  color-scheme: light;
-  --bg: #F1ECE2;
-  --ink: #1A1613;
-  --rule: rgba(26, 22, 19, 0.2);
-  --muted: #6B645B;
-  --wound: #6B1A1A;
+/* ---------- Light inversion (Cell) — parchment over ink ---------- */
+:root[data-mode="cell"] {
+  --color-background: #f2efe9;
+  --color-surface: #f2efe9;
+  --color-surface-dim: #ece8de;
+  --color-surface-bright: #ffffff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #e8e4da;
+  --color-surface-container: #e0dccf;
+  --color-surface-container-high: #d4cfc0;
+  --color-surface-container-highest: #c8c2b2;
+  --color-on-background: #1a1613;
+  --color-on-surface: #1a1613;
+  --color-on-surface-variant: #4a4640;
+  --color-outline: #6b645b;
+  --color-outline-variant: #c2bbab;
+  --color-primary: #2a2a2a;
+  --color-on-primary: #f2efe9;
+  --color-error: #6b1a1a;
+  --color-error-container: #6b1a1a;
+  --color-on-error-container: #f2efe9;
+  --color-cage: #c2bbab;
 }
-:root[data-mode="night"] {
-  color-scheme: dark;
-  --bg: #0D0C0A;
-  --ink: #D9D2C4;
-  --rule: rgba(217, 210, 196, 0.13);
-  --muted: #837C70;
-  --wound: #9B3030;
-}
+
+:root { color-scheme: dark; }
+:root[data-mode="cell"] { color-scheme: light; }
 
 /* ---------- Base ---------- */
 html, body {
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--color-background);
+  color: var(--color-on-background);
 }
 body {
-  font-family: var(--font-serif);
+  font-family: var(--font-body-md);
   font-size: 18px;
-  line-height: 1.7;
-  font-feature-settings: "kern", "liga", "onum";
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 * { border-radius: 0 !important; box-shadow: none !important; }
 
-::selection { background: var(--wound); color: var(--bg); }
+::selection { background: var(--color-error-container); color: var(--color-on-error-container); }
 
-a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: var(--wound);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  transition: text-decoration-thickness 300ms ease;
+/* ---------- Material Symbols ---------- */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
-a:hover { text-decoration-thickness: 2px; }
-a:focus-visible { outline: 1px solid var(--wound); outline-offset: 3px; }
 
-hr { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+/* ---------- Cage borders (1px, oxidized neutral) ---------- */
+.cage-border        { border: 1px solid var(--color-cage); }
+.cage-border-bottom { border-bottom: 1px solid var(--color-cage); }
+.cage-border-right  { border-right: 1px solid var(--color-cage); }
+.cage-border-left   { border-left: 1px solid var(--color-cage); }
+.cage-border-heavy  { border: 1px solid var(--color-error-container); }
 
-.prose hr {
-  border: 0;
-  margin: 2.2em 0;
-  text-align: center;
-  height: auto;
-  color: var(--muted);
-  letter-spacing: 0.4em;
+.inverted-hover:hover {
+  background-color: var(--color-parchment);
+  color: var(--color-background);
+  border-color: var(--color-error-container);
 }
-.prose hr::after { content: "❦"; }
 
-/* ---------- Cage bars ---------- */
+/* ---------- Links ---------- */
+a { color: inherit; text-decoration: none; }
+a:focus-visible { outline: 1px solid var(--color-error-container); outline-offset: 3px; }
+
+/* ---------- Cage bars (full-height viewport hairlines) ---------- */
 .cage-bars::before,
 .cage-bars::after {
   content: "";
   position: fixed;
-  top: 0;
-  bottom: 0;
+  top: 0; bottom: 0;
   width: 1px;
-  background: var(--rule);
-  z-index: 50;
+  background: var(--color-cage);
+  z-index: 30;
   pointer-events: none;
 }
-.cage-bars::before { left: var(--cage-gutter); }
-.cage-bars::after  { right: var(--cage-gutter); }
+.cage-bars::before { left: 0; }
+.cage-bars::after  { right: 0; }
 
-/* ---------- Column ---------- */
+/* ---------- Column for post prose ---------- */
 .column { max-width: var(--measure); margin-inline: auto; }
-.column-wide { max-width: 78ch; margin-inline: auto; }
-
-/* ---------- Display ---------- */
-.display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.005em; }
-.mono { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
 
 /* ---------- Post prose ---------- */
-.prose p { margin: 0 0 1.2em; hyphens: auto; text-align: justify; }
+.prose { font-family: var(--font-body-md); }
+.prose p { margin: 0 0 1.2em; }
 .prose p + p { text-indent: 1.5em; margin-top: 0; }
 .prose blockquote {
   margin: 1.6em 0;
-  padding-left: 1.25em;
-  border-left: 1px solid var(--rule);
+  padding: 1.25rem;
+  border-left: 2px solid var(--color-error-container);
+  background: var(--color-surface-container-low);
+  font-family: var(--font-body-lg);
+  font-size: var(--text-body-lg);
   font-style: italic;
-  color: var(--muted);
+  color: var(--color-on-surface);
 }
 .prose em { font-style: italic; }
 .prose strong { font-weight: 600; }
 .prose h2, .prose h3 {
-  font-family: var(--font-display);
-  font-weight: 400;
+  font-family: var(--font-headline-lg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin: 2em 0 0.6em;
   line-height: 1.2;
+  color: var(--color-on-surface);
 }
-.prose h2 { font-size: 1.6rem; }
-.prose h3 { font-size: 1.25rem; }
+.prose h2 { font-size: 1.8rem; }
+.prose h3 { font-size: 1.3rem; }
 
-/* Drop cap on first paragraph */
+/* Drop cap — first paragraph */
 .prose > p:first-of-type::first-letter {
-  font-family: var(--font-display);
-  color: var(--wound);
+  font-family: var(--font-headline-xl);
+  color: var(--color-error);
   float: left;
-  font-size: 4.4em;
-  line-height: 0.85;
-  padding: 0.05em 0.08em 0 0;
-  margin-right: 0.04em;
-  font-weight: 400;
+  font-size: 4.2em;
+  line-height: 0.8;
+  padding: 0.05em 0.1em 0 0;
+  font-weight: 700;
 }
 .prose > p:first-of-type { text-indent: 0; }
 
 /* Footnote markers */
 .fn-ref {
-  font-family: var(--font-mono);
+  font-family: var(--font-label-md);
   font-size: 0.65em;
   vertical-align: super;
-  color: var(--wound);
-  text-decoration: none;
+  color: var(--color-error);
   padding: 0 0.15em;
 }
 
-/* Ornament */
-.ornament { text-align: center; color: var(--muted); margin: 2.2em 0; letter-spacing: 0.4em; }
-
-/* View transitions */
+/* ---------- View transitions ---------- */
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: 250ms; }
 
 @media (prefers-reduced-motion: reduce) {
-  a, ::view-transition-old(root), ::view-transition-new(root) { transition: none; animation: none; }
+  *, ::view-transition-old(root), ::view-transition-new(root) {
+    transition: none !important; animation: none !important;
+  }
 }

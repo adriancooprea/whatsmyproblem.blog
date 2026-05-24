@@ -6,24 +6,72 @@ import { getCollection } from 'astro:content';
 const posts = (await getCollection('posts'))
   .filter(p => !p.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
----
-<Base title="What's My Problem? — a monthly notebook">
-  <section class="column-wide mb-16">
-    <p class="italic text-[var(--muted)] leading-snug max-w-[52ch]">
-      One essay a month, written by a man who suspects the worst of himself and writes it down so he cannot pretend later that he did not know.
-    </p>
-  </section>
 
-  <section class="column-wide" aria-label="Ledger of essays">
-    {posts.map(p => (
-      <LedgerRow
-        number={p.data.number}
-        date={p.data.date}
-        title={p.data.title}
-        slug={p.id}
-        pullQuote={p.data.pull_quote}
-      />
-    ))}
-    <div class="border-t border-[var(--rule)]"></div>
-  </section>
+const current = posts[0] ?? null;
+const rest = posts.slice(1);
+---
+<Base title="What's My Problem? — The Threshold">
+  <div class="flex flex-col gap-margin pb-margin">
+    <!-- Hero: fragmented brutalism (type only) -->
+    <section class="relative w-full min-h-[55vh] flex flex-col md:flex-row cage-border overflow-hidden">
+      <div class="flex-1 p-8 md:p-16 flex flex-col justify-center cage-border-right bg-surface-dim">
+        <div class="w-12 h-1 bg-error-container mb-8" aria-hidden="true"></div>
+        <h1 class="font-headline-xl text-headline-xl md:text-[80px] leading-none mb-6 text-on-surface uppercase">
+          What&rsquo;s<br /><span class="text-outline">My</span><br />Problem?
+        </h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-md mt-4 border-l-2 border-outline-variant pl-6">
+          An inquiry into the self-inflicted agonies of the overthinking mind. We dissect the paralysis of choice and the comfort of misery.
+        </p>
+      </div>
+      <div class="flex-1 relative min-h-[260px] md:min-h-full bg-surface-container-highest overflow-hidden">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgNDBoNDBWMHoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzU1NTU1NSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9zdmc+')] opacity-25"></div>
+        <div class="absolute bottom-8 right-8 text-right font-caption text-caption text-on-surface-variant">
+          Volume IV<br /><span class="font-label-md text-label-md uppercase text-on-surface">The Threshold</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Current confession -->
+    {current && (
+      <section class="flex flex-col gap-6">
+        <div class="flex items-center justify-between cage-border-bottom pb-2">
+          <h2 class="font-label-md text-label-md uppercase text-on-surface">Current Confession</h2>
+          <span class="w-2 h-2 bg-error-container" aria-hidden="true"></span>
+        </div>
+        <a href={`/posts/${current.id}`} class="cage-border p-8 bg-surface-container-low flex flex-col gap-6 hover:bg-surface-container transition-colors group">
+          <span class="font-caption text-caption text-error">No. {String(current.data.number).padStart(2, '0')} — Current</span>
+          <h3 class="font-headline-lg text-headline-lg text-on-surface leading-tight group-hover:text-error transition-colors">{current.data.title}</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">{current.data.pull_quote}</p>
+          <span class="inline-flex items-center gap-2 font-label-md text-label-md uppercase text-on-surface">
+            Examine the Evidence
+            <span class="material-symbols-outlined text-outline group-hover:text-error group-hover:translate-x-1 transition-all">arrow_right_alt</span>
+          </span>
+        </a>
+      </section>
+    )}
+
+    <!-- Ledger -->
+    <section class="flex flex-col gap-6">
+      <div class="flex items-center justify-between cage-border-bottom pb-2">
+        <h2 class="font-label-md text-label-md uppercase text-on-surface">The Ledger of Previous Errors</h2>
+        <span class="font-caption text-caption text-outline">Archived Agonies</span>
+      </div>
+      {rest.length > 0 ? (
+        <div class="flex flex-col cage-border">
+          {rest.map((p, i) => (
+            <LedgerRow
+              number={p.data.number}
+              date={p.data.date}
+              title={p.data.title}
+              slug={p.id}
+              pullQuote={p.data.pull_quote}
+              last={i === rest.length - 1}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="font-caption text-caption text-outline italic py-8">No prior errors recorded. The ledger begins.</p>
+      )}
+    </section>
+  </div>
 </Base>

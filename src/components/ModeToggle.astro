@@ -1,14 +1,14 @@
 ---
-// Hairline toggle. Label switches: "Night" while in Cell, "Cell" while in Night.
+// Hairline toggle. Label switches: "Cell" while in Night, "Night" while in Cell.
 ---
 <button
   id="mode-toggle"
   type="button"
   aria-label="Toggle color mode"
-  class="mono inline-flex items-center gap-2 border border-[var(--rule)] px-2 py-1 leading-none hover:border-[var(--ink)]"
+  class="font-label-md text-label-md uppercase inline-flex items-center gap-2 border border-outline-variant px-3 py-1 leading-none text-on-surface-variant hover:border-error hover:text-error transition-colors"
 >
-  <span aria-hidden="true" class="block h-[1px] w-3 bg-[var(--ink)]"></span>
-  <span data-mode-label>Night</span>
+  <span aria-hidden="true" class="material-symbols-outlined text-base">contrast</span>
+  <span data-mode-label>Cell</span>
 </button>
 
 <script is:inline>
@@ -18,11 +18,11 @@
     if (!btn) return;
     const label = btn.querySelector('[data-mode-label]');
     const sync = () => {
-      const mode = root.getAttribute('data-mode') || 'cell';
-      if (label) label.textContent = mode === 'night' ? 'Cell' : 'Night';
+      const mode = root.getAttribute('data-mode') || 'night';
+      if (label) label.textContent = mode === 'cell' ? 'Night' : 'Cell';
     };
     btn.addEventListener('click', () => {
-      const next = root.getAttribute('data-mode') === 'night' ? 'cell' : 'night';
+      const next = root.getAttribute('data-mode') === 'cell' ? 'night' : 'cell';
       root.setAttribute('data-mode', next);
       try { localStorage.setItem('wmp-mode', next); } catch {}
       sync();

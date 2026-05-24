@@ -10,6 +10,9 @@ const posts = defineCollection({
     date: z.coerce.date(),
     reading_time: z.number().int().positive(),
     pull_quote: z.string(),
+    perspectives: z
+      .array(z.object({ voice: z.string(), claim: z.string(), body: z.string() }))
+      .optional(),
     draft: z.boolean().optional().default(false),
   }),
 });

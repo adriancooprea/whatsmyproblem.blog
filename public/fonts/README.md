@@ -1,16 +1,16 @@
 # Self-hosted fonts
 
 The CSS in `src/styles/global.css` expects these exact filenames in this
-directory. Drop the files in and nothing else needs to change.
+directory. No Google Fonts CDN — self-host only.
 
-| Filename                              | Source                                                                                                |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| `EBGaramond-Variable.woff2`           | https://github.com/octaviopardo/EBGaramond12 — `fonts/web/EBGaramond-VF.woff2` (rename)               |
-| `EBGaramond-Italic-Variable.woff2`    | same repo — `fonts/web/EBGaramond-Italic-VF.woff2` (rename)                                           |
-| `CormorantGaramond-Regular.woff2`     | https://fonts.google.com/specimen/Cormorant+Garamond → download → convert `Regular.ttf` → woff2       |
-| `CormorantGaramond-Italic.woff2`      | same → `Italic.ttf` → woff2                                                                           |
-| `JetBrainsMono-Regular.woff2`         | https://github.com/JetBrains/JetBrainsMono → `fonts/webfonts/JetBrainsMono-Regular.woff2`             |
+| Filename                            | Source                                                                                          |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `SpaceGrotesk-Variable.woff2`       | https://fonts.google.com/specimen/Space+Grotesk — variable, latin subset (wght 300–700)         |
+| `EBGaramond-Variable.woff2`         | https://fonts.google.com/specimen/EB+Garamond — variable, latin (wght 400–700)                  |
+| `EBGaramond-Italic-Variable.woff2`  | same — italic variable, latin                                                                    |
+| `MaterialSymbolsOutlined.woff2`     | https://fonts.google.com/icons — Material Symbols Outlined, variable (opsz/wght/FILL/GRAD)       |
 
-Convert TTF → WOFF2 with `woff2_compress` or https://transfonter.org/.
-
-No Google Fonts CDN. Self-host only.
+Headlines + labels use Space Grotesk; body uses EB Garamond; icons use
+Material Symbols Outlined. The Material Symbols file is the full variable
+font (~3.9 MB) — subset it (e.g. via `glyphhanger` / `fonttools`) to the
+icons actually used before production if size matters.
