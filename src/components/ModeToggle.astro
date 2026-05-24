@@ -1,0 +1,33 @@
+---
+// Hairline toggle. Label switches: "Night" while in Cell, "Cell" while in Night.
+---
+<button
+  id="mode-toggle"
+  type="button"
+  aria-label="Toggle color mode"
+  class="mono inline-flex items-center gap-2 border border-[var(--rule)] px-2 py-1 leading-none hover:border-[var(--ink)]"
+>
+  <span aria-hidden="true" class="block h-[1px] w-3 bg-[var(--ink)]"></span>
+  <span data-mode-label>Night</span>
+</button>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const btn = document.getElementById('mode-toggle');
+    if (!btn) return;
+    const label = btn.querySelector('[data-mode-label]');
+    const sync = () => {
+      const mode = root.getAttribute('data-mode') || 'cell';
+      if (label) label.textContent = mode === 'night' ? 'Cell' : 'Night';
+    };
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-mode') === 'night' ? 'cell' : 'night';
+      root.setAttribute('data-mode', next);
+      try { localStorage.setItem('wmp-mode', next); } catch {}
+      sync();
+    });
+    sync();
+    document.addEventListener('astro:after-swap', sync);
+  })();
+</script>

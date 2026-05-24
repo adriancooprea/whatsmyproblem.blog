@@ -1,0 +1,32 @@
+---
+import { padNumber, formatMonthShort } from '../lib/format';
+
+interface Props {
+  number: number;
+  date: Date;
+  title: string;
+  slug: string;
+  pullQuote: string;
+}
+const { number, date, title, slug, pullQuote } = Astro.props;
+---
+<a href={`/posts/${slug}`} class="ledger-row group block no-underline border-t border-[var(--rule)] py-5">
+  <div class="md:grid md:grid-cols-[1fr_minmax(0,28ch)] md:gap-8 md:items-baseline">
+    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+      <span class="mono">No. {padNumber(number)}</span>
+      <span class="mono">{formatMonthShort(date)}</span>
+      <span class="display text-xl md:text-2xl leading-snug text-[var(--ink)]">{title}</span>
+    </div>
+    <p class="pull mt-2 md:mt-0 text-[var(--muted)] italic text-[0.95rem] leading-snug md:text-right">
+      {pullQuote}
+    </p>
+  </div>
+</a>
+
+<style>
+  @media (min-width: 768px) {
+    .ledger-row .pull { opacity: 0; transition: opacity 300ms ease; }
+    .ledger-row:hover .pull,
+    .ledger-row:focus-visible .pull { opacity: 1; }
+  }
+</style>

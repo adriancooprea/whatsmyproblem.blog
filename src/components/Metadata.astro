@@ -1,0 +1,17 @@
+---
+import { padNumber, formatMonth, formatReadingTime } from '../lib/format';
+
+interface Props {
+  number: number;
+  date: Date;
+  readingTime: number;
+}
+const { number, date, readingTime } = Astro.props;
+---
+<div class="mono flex flex-wrap gap-x-3 gap-y-1">
+  <span>No. {padNumber(number)}</span>
+  <span aria-hidden="true">·</span>
+  <time datetime={date.toISOString()}>{formatMonth(date)}</time>
+  <span aria-hidden="true">·</span>
+  <span>{formatReadingTime(readingTime)}</span>
+</div>

@@ -1,0 +1,175 @@
+---
+import Base from './Base.astro';
+import Metadata from '../components/Metadata.astro';
+import { getCollection } from 'astro:content';
+import { padNumber, formatMonthShort } from '../lib/format';
+
+interface Props {
+  number: number;
+  title: string;
+  subtitle?: string;
+  date: Date;
+  readingTime: number;
+  slug: string;
+}
+const { number, title, subtitle, date, readingTime, slug } = Astro.props;
+
+const all = (await getCollection('posts'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+const idx = all.findIndex(p => p.id === slug);
+const prev = idx > 0 ? all[idx - 1] : null;
+const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
+---
+<Base title={`${title} — What's My Problem?`}>
+  <article class="relative">
+    <header class="column mb-12">
+      <Metadata number={number} date={date} readingTime={readingTime} />
+      <h1 class="display text-4xl sm:text-5xl leading-[1.05] mt-6 text-[var(--ink)]">{title}</h1>
+      {subtitle && (
+        <p class="mt-4 italic text-[var(--muted)] text-lg leading-snug">{subtitle}</p>
+      )}
+    </header>
+
+    <div class="column prose" data-prose>
+      <slot />
+    </div>
+  </article>
+
+  <nav class="column mt-24 border-t border-[var(--rule)] pt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div>
+      {prev && (
+        <a href={`/posts/${prev.id}`} class="no-underline block">
+          <div class="mono mb-1">← Previous · No. {padNumber(prev.data.number)} · {formatMonthShort(prev.data.date)}</div>
+          <div class="display text-xl text-[var(--ink)] leading-snug">{prev.data.title}</div>
+        </a>
+      )}
+    </div>
+    <div class="sm:text-right">
+      {next && (
+        <a href={`/posts/${next.id}`} class="no-underline block">
+          <div class="mono mb-1">Next → · No. {padNumber(next.data.number)} · {formatMonthShort(next.data.date)}</div>
+          <div class="display text-xl text-[var(--ink)] leading-snug">{next.data.title}</div>
+        </a>
+      )}
+    </div>
+  </nav>
+</Base>
+
+<script>
+  // Footnotes: marginalia on desktop, expand-inline on mobile.
+  // Source HTML is rendered from our own .md files at build time. We avoid
+  // innerHTML and clone DOM nodes to keep this hardened.
+  function transformFootnotes() {
+    const prose = document.querySelector('[data-prose]') as HTMLElement | null;
+    if (!prose) return;
+    const section = prose.querySelector('section[data-footnotes], section.footnotes') as HTMLElement | null;
+    if (!section) return;
+
+    const fragments: Record<string, DocumentFragment> = {};
+    const items = Array.from(section.querySelectorAll('li')) as HTMLLIElement[];
+    items.forEach(li => {
+      const frag = document.createDocumentFragment();
+      Array.from(li.childNodes).forEach(n => frag.appendChild(n.cloneNode(true)));
+      frag.querySelectorAll('a.data-footnote-backref, a[data-footnote-backref], .data-footnote-backref').forEach(a => a.remove());
+      fragments[li.id] = frag;
+    });
+
+    const refs = Array.from(
+      prose.querySelectorAll('sup a[data-footnote-ref], sup a[href^="#user-content-fn-"], sup a[href^="#fn"]')
+    ) as HTMLAnchorElement[];
+
+    refs.forEach((a, i) => {
+      const target = (a.getAttribute('href') || '').replace(/^#/, '');
+      const frag = fragments[target] || fragments[`user-content-${target}`];
+      if (!frag) return;
+      const sup = a.parentElement as HTMLElement;
+      const marker = String(i + 1);
+      a.textContent = marker;
+      a.classList.add('fn-ref');
+      sup.classList.add('fn-sup');
+
+      // Desktop marginalia
+      const aside = document.createElement('aside');
+      aside.className = 'fn-margin';
+      const mk = document.createElement('span');
+      mk.className = 'fn-marker mono';
+      mk.textContent = marker;
+      const body = document.createElement('span');
+      body.className = 'fn-body';
+      body.appendChild(frag.cloneNode(true));
+      aside.appendChild(mk);
+      aside.appendChild(body);
+      sup.insertAdjacentElement('afterend', aside);
+
+      // Mobile inline expand
+      const wrap = document.createElement('span');
+      wrap.className = 'fn-inline';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'fn-toggle';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.textContent = 'show note';
+      const inline = document.createElement('span');
+      inline.className = 'fn-inline-body';
+      inline.hidden = true;
+      inline.appendChild(frag.cloneNode(true));
+      wrap.appendChild(btn);
+      wrap.appendChild(inline);
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        inline.hidden = open;
+        btn.textContent = open ? 'show note' : 'hide note';
+      });
+      sup.insertAdjacentElement('afterend', wrap);
+    });
+
+    section.remove();
+  }
+  transformFootnotes();
+  document.addEventListener('astro:after-swap', transformFootnotes);
+</script>
+
+<style is:global>
+  .fn-margin { display: none; }
+  @media (min-width: 1100px) {
+    .fn-inline { display: none; }
+    .fn-margin {
+      display: block;
+      position: absolute;
+      right: max(1.5rem, calc((100vw - var(--measure)) / 2 - 22ch - 2rem));
+      width: 20ch;
+      transform: translateY(-0.4em);
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--muted);
+      border-left: 1px solid var(--rule);
+      padding-left: 0.75rem;
+    }
+    .fn-margin .fn-marker { color: var(--wound); margin-right: 0.4em; }
+    .fn-margin p { margin: 0; }
+  }
+  .fn-inline { margin-left: 0.25em; font-size: 0.78rem; }
+  .fn-inline .fn-toggle {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--rule);
+    padding: 0.05em 0.4em;
+    cursor: pointer;
+  }
+  .fn-inline-body {
+    display: block;
+    margin: 0.5em 0 0.5em 0.5em;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .fn-inline-body p { margin: 0; }
+  [data-prose] { position: relative; }
+</style>

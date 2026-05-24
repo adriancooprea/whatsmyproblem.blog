@@ -1,0 +1,5 @@
+---
+interface Props { mark?: 'fleuron' | 'asterism'; }
+const { mark = 'fleuron' } = Astro.props;
+---
+<div class="ornament" aria-hidden="true">{mark === 'asterism' ? '* * *' : '❦'}</div>

@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+/* ---------- Self-hosted fonts ---------- */
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/EBGaramond-Variable.woff2") format("woff2-variations");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("/fonts/EBGaramond-Italic-Variable.woff2") format("woff2-variations");
+  font-weight: 400 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/CormorantGaramond-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/CormorantGaramond-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Theme tokens ---------- */
+@theme {
+  --font-serif: "EB Garamond", "Iowan Old Style", Georgia, serif;
+  --font-display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-bg: #F1ECE2;
+  --color-ink: #1A1613;
+  --color-rule: rgba(26, 22, 19, 0.2);
+  --color-muted: #6B645B;
+  --color-wound: #6B1A1A;
+
+  --measure: 62ch;
+  --cage-gutter: 1.25rem;
+}
+
+/* ---------- Mode ---------- */
+:root {
+  color-scheme: light;
+  --bg: #F1ECE2;
+  --ink: #1A1613;
+  --rule: rgba(26, 22, 19, 0.2);
+  --muted: #6B645B;
+  --wound: #6B1A1A;
+}
+:root[data-mode="night"] {
+  color-scheme: dark;
+  --bg: #0D0C0A;
+  --ink: #D9D2C4;
+  --rule: rgba(217, 210, 196, 0.13);
+  --muted: #837C70;
+  --wound: #9B3030;
+}
+
+/* ---------- Base ---------- */
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+}
+body {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  line-height: 1.7;
+  font-feature-settings: "kern", "liga", "onum";
+  -webkit-font-smoothing: antialiased;
+}
+* { border-radius: 0 !important; box-shadow: none !important; }
+
+::selection { background: var(--wound); color: var(--bg); }
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--wound);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: text-decoration-thickness 300ms ease;
+}
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 1px solid var(--wound); outline-offset: 3px; }
+
+hr { border: 0; border-top: 1px solid var(--rule); margin: 0; }
+
+.prose hr {
+  border: 0;
+  margin: 2.2em 0;
+  text-align: center;
+  height: auto;
+  color: var(--muted);
+  letter-spacing: 0.4em;
+}
+.prose hr::after { content: "❦"; }
+
+/* ---------- Cage bars ---------- */
+.cage-bars::before,
+.cage-bars::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+  z-index: 50;
+  pointer-events: none;
+}
+.cage-bars::before { left: var(--cage-gutter); }
+.cage-bars::after  { right: var(--cage-gutter); }
+
+/* ---------- Column ---------- */
+.column { max-width: var(--measure); margin-inline: auto; }
+.column-wide { max-width: 78ch; margin-inline: auto; }
+
+/* ---------- Display ---------- */
+.display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.005em; }
+.mono { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- Post prose ---------- */
+.prose p { margin: 0 0 1.2em; hyphens: auto; text-align: justify; }
+.prose p + p { text-indent: 1.5em; margin-top: 0; }
+.prose blockquote {
+  margin: 1.6em 0;
+  padding-left: 1.25em;
+  border-left: 1px solid var(--rule);
+  font-style: italic;
+  color: var(--muted);
+}
+.prose em { font-style: italic; }
+.prose strong { font-weight: 600; }
+.prose h2, .prose h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  margin: 2em 0 0.6em;
+  line-height: 1.2;
+}
+.prose h2 { font-size: 1.6rem; }
+.prose h3 { font-size: 1.25rem; }
+
+/* Drop cap on first paragraph */
+.prose > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  color: var(--wound);
+  float: left;
+  font-size: 4.4em;
+  line-height: 0.85;
+  padding: 0.05em 0.08em 0 0;
+  margin-right: 0.04em;
+  font-weight: 400;
+}
+.prose > p:first-of-type { text-indent: 0; }
+
+/* Footnote markers */
+.fn-ref {
+  font-family: var(--font-mono);
+  font-size: 0.65em;
+  vertical-align: super;
+  color: var(--wound);
+  text-decoration: none;
+  padding: 0 0.15em;
+}
+
+/* Ornament */
+.ornament { text-align: center; color: var(--muted); margin: 2.2em 0; letter-spacing: 0.4em; }
+
+/* View transitions */
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: 250ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  a, ::view-transition-old(root), ::view-transition-new(root) { transition: none; animation: none; }
+}

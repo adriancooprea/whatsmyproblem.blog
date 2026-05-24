@@ -1,0 +1,58 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import ModeToggle from '../components/ModeToggle.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "A monthly notebook of disturbances." } = Astro.props;
+---
+<!doctype html>
+<html lang="en" data-mode="cell">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="What's My Problem?" href="/rss.xml" />
+    <title>{title}</title>
+    <ClientRouter />
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('wmp-mode');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const mode = stored || (prefersDark ? 'night' : 'cell');
+          document.documentElement.setAttribute('data-mode', mode);
+        } catch {}
+      })();
+    </script>
+  </head>
+  <body class="cage-bars min-h-screen">
+    <header class="px-6 sm:px-10 pt-6 pb-10 flex items-start justify-between gap-6">
+      <a href="/" class="no-underline">
+        <span class="display text-2xl sm:text-3xl tracking-tight leading-none text-[var(--ink)]">
+          What&rsquo;s My Problem?
+        </span>
+      </a>
+      <ModeToggle />
+    </header>
+
+    <main class="px-6 sm:px-10 pb-24">
+      <slot />
+    </main>
+
+    <footer class="px-6 sm:px-10 py-10 border-t border-[var(--rule)]">
+      <div class="column flex flex-wrap items-baseline justify-between gap-4">
+        <span class="mono">— end of column —</span>
+        <nav class="mono flex gap-4">
+          <a href="/">Home</a>
+          <a href="/archive">Archive</a>
+          <a href="/about">About</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

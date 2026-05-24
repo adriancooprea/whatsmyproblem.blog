@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import LedgerRow from '../components/LedgerRow.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts'))
+  .filter(p => !p.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+<Base title="What's My Problem? — a monthly notebook">
+  <section class="column-wide mb-16">
+    <p class="italic text-[var(--muted)] leading-snug max-w-[52ch]">
+      One essay a month, written by a man who suspects the worst of himself and writes it down so he cannot pretend later that he did not know.
+    </p>
+  </section>
+
+  <section class="column-wide" aria-label="Ledger of essays">
+    {posts.map(p => (
+      <LedgerRow
+        number={p.data.number}
+        date={p.data.date}
+        title={p.data.title}
+        slug={p.id}
+        pullQuote={p.data.pull_quote}
+      />
+    ))}
+    <div class="border-t border-[var(--rule)]"></div>
+  </section>
+</Base>
