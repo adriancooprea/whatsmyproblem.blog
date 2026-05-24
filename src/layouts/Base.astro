@@ -8,9 +8,16 @@ interface Props {
   description?: string;
 }
 const { title, description = "A monthly notebook of disturbances." } = Astro.props;
+
+const nav = [
+  { href: '/', label: 'Threshold', icon: 'grid_view' },
+  { href: '/archive', label: 'The Cabinet', icon: 'inventory_2' },
+  { href: '/about', label: 'The Mirror', icon: 'contrast' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 <!doctype html>
-<html lang="en" data-mode="cell">
+<html lang="en" data-mode="night">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,36 +30,62 @@ const { title, description = "A monthly notebook of disturbances." } = Astro.pro
       (() => {
         try {
           const stored = localStorage.getItem('wmp-mode');
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const mode = stored || (prefersDark ? 'night' : 'cell');
-          document.documentElement.setAttribute('data-mode', mode);
+          document.documentElement.setAttribute('data-mode', stored || 'night');
         } catch {}
       })();
     </script>
   </head>
-  <body class="cage-bars min-h-screen">
-    <header class="px-6 sm:px-10 pt-6 pb-10 flex items-start justify-between gap-6">
-      <a href="/" class="no-underline">
-        <span class="display text-2xl sm:text-3xl tracking-tight leading-none text-[var(--ink)]">
-          What&rsquo;s My Problem?
-        </span>
-      </a>
+  <body class="cage-bars bg-background text-on-background min-h-screen font-body-md overflow-x-hidden">
+    <!-- Mobile top bar -->
+    <header class="md:hidden fixed top-0 inset-x-0 z-50 h-16 flex items-center justify-between px-gutter bg-background cage-border-bottom">
+      <a href="/" class="font-headline-lg-mobile text-headline-lg-mobile tracking-tighter text-on-background">What&rsquo;s My Problem?</a>
       <ModeToggle />
     </header>
 
-    <main class="px-6 sm:px-10 pb-24">
-      <slot />
-    </main>
-
-    <footer class="px-6 sm:px-10 py-10 border-t border-[var(--rule)]">
-      <div class="column flex flex-wrap items-baseline justify-between gap-4">
-        <span class="mono">— end of column —</span>
-        <nav class="mono flex gap-4">
-          <a href="/">Home</a>
-          <a href="/archive">Archive</a>
-          <a href="/about">About</a>
-        </nav>
+    <!-- Desktop sidebar -->
+    <aside class="hidden md:flex flex-col h-screen fixed left-0 top-0 z-40 w-64 bg-surface-container-lowest cage-border-right pt-12 px-6 pb-6">
+      <div class="mb-12">
+        <a href="/" class="block font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">The Anonymous Self</a>
+        <p class="font-caption text-caption text-on-surface-variant mt-2">A record of small defeats</p>
       </div>
-    </footer>
+      <nav class="flex-1 flex flex-col gap-1">
+        {nav.map(item => {
+          const active = item.href === path;
+          return (
+            <a
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+              class={`flex items-center gap-4 px-4 py-3 font-label-md text-label-md uppercase transition-colors ${active ? 'bg-secondary-container text-on-secondary-container font-bold' : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'}`}
+            >
+              <span class="material-symbols-outlined text-xl">{item.icon}</span>
+              {item.label}
+            </a>
+          );
+        })}
+      </nav>
+      <div class="mt-auto flex flex-col gap-4">
+        <ModeToggle />
+        <a href="/archive" class="block text-center py-3 cage-border font-label-md text-label-md uppercase text-on-background inverted-hover transition-all duration-300">
+          Open the Abyss
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="md:ml-64 flex flex-col min-h-screen pt-16 md:pt-0">
+      <main class="flex-1 px-gutter md:px-margin py-margin max-w-5xl w-full mx-auto">
+        <slot />
+      </main>
+
+      <footer class="px-gutter md:px-margin py-margin flex flex-col items-center gap-unit cage-border-top mt-margin">
+        <div class="font-label-md text-label-md uppercase text-on-tertiary-container mb-4">What&rsquo;s My Problem?</div>
+        <nav class="flex gap-6 mb-4 font-caption text-caption">
+          <a href="/" class="text-on-surface-variant hover:text-error transition-colors">Threshold</a>
+          <a href="/archive" class="text-on-surface-variant hover:text-error transition-colors">The Cabinet</a>
+          <a href="/about" class="text-on-surface-variant hover:text-error transition-colors">The Mirror</a>
+        </nav>
+        <p class="font-caption text-caption text-on-surface-variant text-center">© 1864 — 2026 The Silent Voice. All rights reserved in isolation.</p>
+      </footer>
+    </div>
   </body>
 </html>

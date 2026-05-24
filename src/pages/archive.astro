@@ -15,23 +15,31 @@ for (const p of posts) {
 }
 const years = Array.from(byYear.keys()).sort((a, b) => b - a);
 ---
-<Base title="Archive — What's My Problem?">
-  <section class="column-wide">
-    <h1 class="display text-3xl sm:text-4xl mb-10 text-[var(--ink)]">Archive</h1>
-    {years.map(year => (
-      <div class="mb-12">
-        <h2 class="display text-2xl mb-2 text-[var(--ink)]">{year}</h2>
-        {byYear.get(year)!.map(p => (
+<Base title="The Cabinet — What's My Problem?">
+  <div class="flex items-center justify-between cage-border-bottom pb-2 mb-margin">
+    <h1 class="font-label-md text-label-md uppercase text-on-surface">The Cabinet — Full Archive</h1>
+    <span class="w-2 h-2 bg-error-container" aria-hidden="true"></span>
+  </div>
+
+  {years.length === 0 && (
+    <p class="font-caption text-caption text-outline italic py-8">The cabinet is empty. Nothing has been filed yet.</p>
+  )}
+
+  {years.map(year => (
+    <section class="mb-margin">
+      <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">{year}</h2>
+      <div class="flex flex-col cage-border">
+        {byYear.get(year)!.map((p, i) => (
           <LedgerRow
             number={p.data.number}
             date={p.data.date}
             title={p.data.title}
             slug={p.id}
             pullQuote={p.data.pull_quote}
+            last={i === byYear.get(year)!.length - 1}
           />
         ))}
-        <div class="border-t border-[var(--rule)]"></div>
       </div>
-    ))}
-  </section>
+    </section>
+  ))}
 </Base>

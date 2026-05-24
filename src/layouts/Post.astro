@@ -4,6 +4,11 @@ import Metadata from '../components/Metadata.astro';
 import { getCollection } from 'astro:content';
 import { padNumber, formatMonthShort } from '../lib/format';
 
+interface Perspective {
+  voice: string;
+  claim: string;
+  body: string;
+}
 interface Props {
   number: number;
   title: string;
@@ -11,8 +16,10 @@ interface Props {
   date: Date;
   readingTime: number;
   slug: string;
+  perspectives?: Perspective[];
 }
-const { number, title, subtitle, date, readingTime, slug } = Astro.props;
+const { number, title, subtitle, date, readingTime, slug, perspectives } = Astro.props;
+const hasPerspectives = !!perspectives && perspectives.length > 0;
 
 const all = (await getCollection('posts'))
   .filter(p => !p.data.draft)
@@ -22,34 +29,49 @@ const prev = idx > 0 ? all[idx - 1] : null;
 const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 ---
 <Base title={`${title} — What's My Problem?`}>
-  <article class="relative">
-    <header class="column mb-12">
-      <Metadata number={number} date={date} readingTime={readingTime} />
-      <h1 class="display text-4xl sm:text-5xl leading-[1.05] mt-6 text-[var(--ink)]">{title}</h1>
-      {subtitle && (
-        <p class="mt-4 italic text-[var(--muted)] text-lg leading-snug">{subtitle}</p>
-      )}
-    </header>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+    <!-- The Confession -->
+    <article class={`${hasPerspectives ? 'lg:col-span-8' : 'lg:col-span-12'} cage-border p-gutter md:p-margin bg-surface-dim`}>
+      <header class="mb-margin cage-border-bottom pb-gutter">
+        <h1 class="font-headline-xl text-headline-xl md:text-[64px] text-on-surface mb-4 leading-none">{title}</h1>
+        {subtitle && <p class="font-body-lg text-body-lg italic text-on-surface-variant mb-4">{subtitle}</p>}
+        <Metadata number={number} date={date} readingTime={readingTime} />
+      </header>
 
-    <div class="column prose" data-prose>
-      <slot />
-    </div>
-  </article>
+      <div class="prose font-body-md text-body-md text-on-surface" data-prose>
+        <slot />
+      </div>
+    </article>
 
-  <nav class="column mt-24 border-t border-[var(--rule)] pt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <!-- Side rail: dual perspectives (only when the post supplies them) -->
+    {hasPerspectives && (
+      <aside class="lg:col-span-4 flex flex-col gap-gutter">
+        {perspectives!.map((p, i) => (
+          <div class={`p-gutter ${i % 2 === 1 ? 'cage-border-heavy bg-surface-container-highest' : 'cage-border bg-surface-container-low'}`}>
+            <div class="font-label-md text-label-md uppercase text-error mb-4 pb-2 cage-border-bottom">{p.voice}</div>
+            <div class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">{p.claim}</div>
+            <p class="font-caption text-caption text-on-surface-variant">{p.body}</p>
+          </div>
+        ))}
+      </aside>
+    )}
+  </div>
+
+  <!-- Prev / next -->
+  <nav class="mt-margin cage-border-top pt-gutter grid grid-cols-1 sm:grid-cols-2 gap-gutter">
     <div>
       {prev && (
-        <a href={`/posts/${prev.id}`} class="no-underline block">
-          <div class="mono mb-1">← Previous · No. {padNumber(prev.data.number)} · {formatMonthShort(prev.data.date)}</div>
-          <div class="display text-xl text-[var(--ink)] leading-snug">{prev.data.title}</div>
+        <a href={`/posts/${prev.id}`} class="block group">
+          <div class="font-label-md text-label-md uppercase text-on-surface-variant mb-1 group-hover:text-error transition-colors">← No. {padNumber(prev.data.number)} · {formatMonthShort(prev.data.date)}</div>
+          <div class="font-body-lg text-body-lg text-on-surface group-hover:text-error transition-colors">{prev.data.title}</div>
         </a>
       )}
     </div>
     <div class="sm:text-right">
       {next && (
-        <a href={`/posts/${next.id}`} class="no-underline block">
-          <div class="mono mb-1">Next → · No. {padNumber(next.data.number)} · {formatMonthShort(next.data.date)}</div>
-          <div class="display text-xl text-[var(--ink)] leading-snug">{next.data.title}</div>
+        <a href={`/posts/${next.id}`} class="block group">
+          <div class="font-label-md text-label-md uppercase text-on-surface-variant mb-1 group-hover:text-error transition-colors">No. {padNumber(next.data.number)} · {formatMonthShort(next.data.date)} →</div>
+          <div class="font-body-lg text-body-lg text-on-surface group-hover:text-error transition-colors">{next.data.title}</div>
         </a>
       )}
     </div>
@@ -57,9 +79,7 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 </Base>
 
 <script>
-  // Footnotes: marginalia on desktop, expand-inline on mobile.
-  // Source HTML is rendered from our own .md files at build time. We avoid
-  // innerHTML and clone DOM nodes to keep this hardened.
+  // Footnotes: inline expand. Source HTML is from our own .md at build time.
   function transformFootnotes() {
     const prose = document.querySelector('[data-prose]') as HTMLElement | null;
     if (!prose) return;
@@ -87,22 +107,7 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
       const marker = String(i + 1);
       a.textContent = marker;
       a.classList.add('fn-ref');
-      sup.classList.add('fn-sup');
 
-      // Desktop marginalia
-      const aside = document.createElement('aside');
-      aside.className = 'fn-margin';
-      const mk = document.createElement('span');
-      mk.className = 'fn-marker mono';
-      mk.textContent = marker;
-      const body = document.createElement('span');
-      body.className = 'fn-body';
-      body.appendChild(frag.cloneNode(true));
-      aside.appendChild(mk);
-      aside.appendChild(body);
-      sup.insertAdjacentElement('afterend', aside);
-
-      // Mobile inline expand
       const wrap = document.createElement('span');
       wrap.className = 'fn-inline';
       const btn = document.createElement('button');
@@ -132,33 +137,15 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 </script>
 
 <style is:global>
-  .fn-margin { display: none; }
-  @media (min-width: 1100px) {
-    .fn-inline { display: none; }
-    .fn-margin {
-      display: block;
-      position: absolute;
-      right: max(1.5rem, calc((100vw - var(--measure)) / 2 - 22ch - 2rem));
-      width: 20ch;
-      transform: translateY(-0.4em);
-      font-size: 0.78rem;
-      line-height: 1.45;
-      color: var(--muted);
-      border-left: 1px solid var(--rule);
-      padding-left: 0.75rem;
-    }
-    .fn-margin .fn-marker { color: var(--wound); margin-right: 0.4em; }
-    .fn-margin p { margin: 0; }
-  }
   .fn-inline { margin-left: 0.25em; font-size: 0.78rem; }
   .fn-inline .fn-toggle {
-    font-family: var(--font-mono);
+    font-family: var(--font-label-md);
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--muted);
+    color: var(--color-on-surface-variant);
     background: transparent;
-    border: 1px solid var(--rule);
+    border: 1px solid var(--color-cage);
     padding: 0.05em 0.4em;
     cursor: pointer;
   }
@@ -166,10 +153,9 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
     display: block;
     margin: 0.5em 0 0.5em 0.5em;
     padding-left: 0.75rem;
-    border-left: 1px solid var(--rule);
-    color: var(--muted);
+    border-left: 1px solid var(--color-cage);
+    color: var(--color-on-surface-variant);
     font-size: 0.9rem;
   }
   .fn-inline-body p { margin: 0; }
-  [data-prose] { position: relative; }
 </style>

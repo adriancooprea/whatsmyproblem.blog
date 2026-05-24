@@ -8,10 +8,10 @@ interface Props {
 }
 const { number, date, readingTime } = Astro.props;
 ---
-<div class="mono flex flex-wrap gap-x-3 gap-y-1">
-  <span>No. {padNumber(number)}</span>
-  <span aria-hidden="true">·</span>
+<div class="font-caption text-caption text-on-surface-variant flex flex-wrap gap-x-4 gap-y-1">
+  <span>Entry No. {padNumber(number)}</span>
+  <span aria-hidden="true">|</span>
   <time datetime={date.toISOString()}>{formatMonth(date)}</time>
-  <span aria-hidden="true">·</span>
+  <span aria-hidden="true">|</span>
   <span>{formatReadingTime(readingTime)}</span>
 </div>

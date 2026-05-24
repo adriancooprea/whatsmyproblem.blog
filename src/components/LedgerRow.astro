@@ -1,5 +1,5 @@
 ---
-import { padNumber, formatMonthShort } from '../lib/format';
+import { padNumber } from '../lib/format';
 
 interface Props {
   number: number;
@@ -7,26 +7,22 @@ interface Props {
   title: string;
   slug: string;
   pullQuote: string;
+  last?: boolean;
 }
-const { number, date, title, slug, pullQuote } = Astro.props;
+const { number, title, slug, pullQuote, last = false } = Astro.props;
 ---
-<a href={`/posts/${slug}`} class="ledger-row group block no-underline border-t border-[var(--rule)] py-5">
-  <div class="md:grid md:grid-cols-[1fr_minmax(0,28ch)] md:gap-8 md:items-baseline">
-    <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-      <span class="mono">No. {padNumber(number)}</span>
-      <span class="mono">{formatMonthShort(date)}</span>
-      <span class="display text-xl md:text-2xl leading-snug text-[var(--ink)]">{title}</span>
-    </div>
-    <p class="pull mt-2 md:mt-0 text-[var(--muted)] italic text-[0.95rem] leading-snug md:text-right">
-      {pullQuote}
-    </p>
+<a
+  href={`/posts/${slug}`}
+  class={`group flex flex-col md:flex-row hover:bg-surface-container-high transition-colors ${last ? '' : 'cage-border-bottom'}`}
+>
+  <div class="md:w-32 p-4 md:p-6 cage-border-right flex items-center justify-center bg-surface-dim group-hover:bg-transparent transition-colors">
+    <span class="font-label-md text-label-md uppercase text-outline">No. {padNumber(number)}</span>
+  </div>
+  <div class="flex-1 p-4 md:p-6 flex flex-col justify-center">
+    <h3 class="font-body-lg text-body-lg text-on-surface group-hover:text-error transition-colors">{title}</h3>
+    <p class="font-caption text-caption text-on-surface-variant mt-1">{pullQuote}</p>
+  </div>
+  <div class="hidden md:flex p-6 items-center justify-end">
+    <span class="material-symbols-outlined text-outline group-hover:text-error transition-colors">chevron_right</span>
   </div>
 </a>
-
-<style>
-  @media (min-width: 768px) {
-    .ledger-row .pull { opacity: 0; transition: opacity 300ms ease; }
-    .ledger-row:hover .pull,
-    .ledger-row:focus-visible .pull { opacity: 1; }
-  }
-</style>

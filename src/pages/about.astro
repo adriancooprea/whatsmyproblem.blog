@@ -1,16 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="About — What's My Problem?">
-  <section class="column">
-    <h1 class="display text-3xl sm:text-4xl mb-8 text-[var(--ink)]">About</h1>
-    <div class="prose">
+<Base title="The Mirror — What's My Problem?">
+  <div class="max-w-3xl">
+    <div class="flex items-center justify-between cage-border-bottom pb-2 mb-margin">
+      <h1 class="font-label-md text-label-md uppercase text-on-surface">The Mirror</h1>
+      <span class="w-2 h-2 bg-error-container" aria-hidden="true"></span>
+    </div>
+    <div class="cage-border p-gutter md:p-margin bg-surface-dim prose font-body-md text-body-md text-on-surface">
       <p>
         This is a private notebook left open in public. One essay a month, written by a man who has noticed that knowing the cage is not the same as leaving it, and who has run out of excuses for why he still sits inside. There is no schedule beyond once a month; no theme beyond what is currently disturbing the author. Reading is welcome. Writing back is not the point.
       </p>
-      <p>
-        Correspondence, if it must happen, goes to <a href="mailto:hello@whatsmyproblem.blog">hello@whatsmyproblem.blog</a>.
-      </p>
     </div>
-  </section>
+  </div>
 </Base>
