@@ -19,6 +19,7 @@ interface Props {
   perspectives?: Perspective[];
 }
 const { number, title, subtitle, date, readingTime, slug, perspectives } = Astro.props;
+const hasPerspectives = !!perspectives && perspectives.length > 0;
 
 const all = (await getCollection('posts'))
   .filter(p => !p.data.draft)
@@ -30,7 +31,7 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 <Base title={`${title} — What's My Problem?`}>
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
     <!-- The Confession -->
-    <article class="lg:col-span-8 cage-border p-gutter md:p-margin bg-surface-dim">
+    <article class={`${hasPerspectives ? 'lg:col-span-8' : 'lg:col-span-12'} cage-border p-gutter md:p-margin bg-surface-dim`}>
       <header class="mb-margin cage-border-bottom pb-gutter">
         <h1 class="font-headline-xl text-headline-xl md:text-[64px] text-on-surface mb-4 leading-none">{title}</h1>
         {subtitle && <p class="font-body-lg text-body-lg italic text-on-surface-variant mb-4">{subtitle}</p>}
@@ -42,19 +43,18 @@ const next = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
       </div>
     </article>
 
-    <!-- Side rail -->
-    <aside class="lg:col-span-4 flex flex-col gap-gutter">
-      {perspectives && perspectives.length > 0 && perspectives.map((p, i) => (
-        <div class={`p-gutter ${i % 2 === 1 ? 'cage-border-heavy bg-surface-container-highest' : 'cage-border bg-surface-container-low'}`}>
-          <div class="font-label-md text-label-md uppercase text-error mb-4 pb-2 cage-border-bottom">{p.voice}</div>
-          <div class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">{p.claim}</div>
-          <p class="font-caption text-caption text-on-surface-variant">{p.body}</p>
-        </div>
-      ))}
-      <div class="cage-border p-gutter bg-background flex justify-center items-center h-48">
-        <span class="font-headline-lg-mobile text-headline-lg-mobile uppercase text-on-surface-variant">No Exit</span>
-      </div>
-    </aside>
+    <!-- Side rail: dual perspectives (only when the post supplies them) -->
+    {hasPerspectives && (
+      <aside class="lg:col-span-4 flex flex-col gap-gutter">
+        {perspectives!.map((p, i) => (
+          <div class={`p-gutter ${i % 2 === 1 ? 'cage-border-heavy bg-surface-container-highest' : 'cage-border bg-surface-container-low'}`}>
+            <div class="font-label-md text-label-md uppercase text-error mb-4 pb-2 cage-border-bottom">{p.voice}</div>
+            <div class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">{p.claim}</div>
+            <p class="font-caption text-caption text-on-surface-variant">{p.body}</p>
+          </div>
+        ))}
+      </aside>
+    )}
   </div>
 
   <!-- Prev / next -->

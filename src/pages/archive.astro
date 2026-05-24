@@ -15,14 +15,14 @@ for (const p of posts) {
 }
 const years = Array.from(byYear.keys()).sort((a, b) => b - a);
 ---
-<Base title="The Underground — What's My Problem?">
+<Base title="The Cabinet — What's My Problem?">
   <div class="flex items-center justify-between cage-border-bottom pb-2 mb-margin">
-    <h1 class="font-label-md text-label-md uppercase text-on-surface">The Underground — Full Archive</h1>
+    <h1 class="font-label-md text-label-md uppercase text-on-surface">The Cabinet — Full Archive</h1>
     <span class="w-2 h-2 bg-error-container" aria-hidden="true"></span>
   </div>
 
   {years.length === 0 && (
-    <p class="font-caption text-caption text-outline italic py-8">The underground is empty. Nothing has been buried yet.</p>
+    <p class="font-caption text-caption text-outline italic py-8">The cabinet is empty. Nothing has been filed yet.</p>
   )}
 
   {years.map(year => (

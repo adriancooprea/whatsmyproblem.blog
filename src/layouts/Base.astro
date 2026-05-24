@@ -11,7 +11,7 @@ const { title, description = "A monthly notebook of disturbances." } = Astro.pro
 
 const nav = [
   { href: '/', label: 'Threshold', icon: 'grid_view' },
-  { href: '/archive', label: 'The Underground', icon: 'inventory_2' },
+  { href: '/archive', label: 'The Cabinet', icon: 'inventory_2' },
   { href: '/about', label: 'The Mirror', icon: 'contrast' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -46,7 +46,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     <aside class="hidden md:flex flex-col h-screen fixed left-0 top-0 z-40 w-64 bg-surface-container-lowest cage-border-right pt-12 px-6 pb-6">
       <div class="mb-12">
         <a href="/" class="block font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight">The Anonymous Self</a>
-        <p class="font-caption text-caption text-on-surface-variant mt-2">Notes from the cellar</p>
+        <p class="font-caption text-caption text-on-surface-variant mt-2">A record of small defeats</p>
       </div>
       <nav class="flex-1 flex flex-col gap-1">
         {nav.map(item => {
@@ -66,7 +66,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
       <div class="mt-auto flex flex-col gap-4">
         <ModeToggle />
         <a href="/archive" class="block text-center py-3 cage-border font-label-md text-label-md uppercase text-on-background inverted-hover transition-all duration-300">
-          Enter the Cage
+          Open the Abyss
         </a>
       </div>
     </aside>
@@ -81,7 +81,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
         <div class="font-label-md text-label-md uppercase text-on-tertiary-container mb-4">What&rsquo;s My Problem?</div>
         <nav class="flex gap-6 mb-4 font-caption text-caption">
           <a href="/" class="text-on-surface-variant hover:text-error transition-colors">Threshold</a>
-          <a href="/archive" class="text-on-surface-variant hover:text-error transition-colors">The Underground</a>
+          <a href="/archive" class="text-on-surface-variant hover:text-error transition-colors">The Cabinet</a>
           <a href="/about" class="text-on-surface-variant hover:text-error transition-colors">The Mirror</a>
         </nav>
         <p class="font-caption text-caption text-on-surface-variant text-center">© 1864 — 2026 The Silent Voice. All rights reserved in isolation.</p>

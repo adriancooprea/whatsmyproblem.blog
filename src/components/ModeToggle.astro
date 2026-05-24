@@ -9,7 +9,7 @@
   class="font-label-md text-label-md uppercase inline-flex items-center gap-2 border border-outline-variant px-3 py-1 leading-none text-on-surface-variant hover:border-error hover:text-error transition-colors"
 >
   <span aria-hidden="true" class="material-symbols-outlined text-base">contrast</span>
-  <span data-mode-label>Cell</span>
+  <span data-mode-label>Day</span>
 </button>
 
 <script is:inline>
@@ -17,7 +17,7 @@
     const root = document.documentElement;
     const sync = () => {
       const mode = root.getAttribute('data-mode') || 'night';
-      const text = mode === 'cell' ? 'Night' : 'Cell';
+      const text = mode === 'cell' ? 'Night' : 'Day';
       document.querySelectorAll('[data-mode-label]').forEach(el => { el.textContent = text; });
     };
     const bind = () => {

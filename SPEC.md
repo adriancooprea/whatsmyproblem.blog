@@ -67,7 +67,7 @@ Three pages + feed. Primary nav is the desktop left sidebar ("The Anonymous Self
 
 - `/` — **The Threshold**: fragmented type hero, Current Confession (latest post), ledger of previous errors.
 - `/posts/[slug]` — **The Confession**: 8/12 article column + 4/12 side rail (dual perspectives + "No Exit" panel), metadata strip, drop cap, footnotes (inline-expand), prev/next.
-- `/archive` — **The Underground**: ledger grouped by year.
+- `/archive` — **The Cabinet**: ledger grouped by year.
 - `/about` — **The Mirror**: one bordered paragraph + email.
 
 Plus `/rss.xml` — feed file, no nav link.
